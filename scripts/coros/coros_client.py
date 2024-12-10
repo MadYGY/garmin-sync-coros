@@ -3,7 +3,9 @@ import os
 import urllib3
 import json
 import hashlib
+import logging
 
+logger = logging.getLogger(__name__)
 # from entity.login_user import LoginUser
 
 
@@ -82,6 +84,7 @@ class CorosClient:
           )
           upload_response = json.loads(response.data)
           upload_result = upload_response["result"]
+          logger.info('上传结果: ' + upload_response)
           return upload_result
         except Exception as err:
             exit() 
