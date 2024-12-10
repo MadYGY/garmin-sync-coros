@@ -84,7 +84,7 @@ class CorosClient:
           )
           upload_response = json.loads(response.data)
           upload_result = upload_response["result"]
-          logger.info('上传结果: ' + upload_response)
+          logger.warning('上传结果: ' + upload_response)
           return upload_result
         except Exception as err:
             exit() 
