@@ -2,6 +2,9 @@ import urllib3
 import json
 import hashlib
 
+import certifi
+
+
 from coros.region_config import REGIONCONFIG
 from coros.sts_config import STS_CONFIG
 
@@ -11,7 +14,7 @@ class CorosClient:
         
         self.email = email
         self.password = password
-        self.req = urllib3.PoolManager()
+        self.req = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
         self.accessToken = None
         self.userId = None
         self.regionId = None
@@ -126,22 +129,18 @@ class CorosClient:
           "Accept":       "application/json, text/plain, */*",
           "accesstoken": self.accessToken,
        }
-       try:
-          get_activity_download_url_response = self.req.request(
+       get_activity_download_url_response = self.req.request(
               method = 'POST',
               url=get_activity_download_url,
               headers=headers
           )
-          get_activity_download_url_response_json = json.loads(get_activity_download_url_response.data)
-          download_url = get_activity_download_url_response_json['data']['fileUrl']
-          return self.req.request(
-              method = 'GET',
-              url=download_url,
-              headers=headers
-          )
-       except Exception as err:
-            exit() 
-       pass
+       get_activity_download_url_response_json = json.loads(get_activity_download_url_response.data)
+       download_url = get_activity_download_url_response_json['data']['fileUrl']
+       return self.req.request(
+          method = 'GET',
+          url=download_url,
+          headers=headers
+      )
 
     ## 检查token是否有效
     def checkToken(self):
